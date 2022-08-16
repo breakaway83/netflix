@@ -5,6 +5,10 @@ Getting Started
 ================
 
 * If you want to run `exploit_automation` locally:
+* Make sure `~/.virtualenvs` directory exists. Create it if it does not exist:
+```Shell
+$ mkdir -p ~/.virtualenvs
+```
 * Unzip the tarball into a directory
 ```shell
 $ tar -xvf WM-NETFLIX-Python.tar.gz
