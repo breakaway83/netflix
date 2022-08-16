@@ -1,4 +1,6 @@
+import os
 import unittest
+from pathlib import Path
 from typing import List
 
 import requests_mock
@@ -13,9 +15,7 @@ class TestExploitEndpoints(unittest.TestCase):
     def setUp(cls) -> None:
         cls.log_url: str = Config.LOG_URL
         cls.affected_url: str = Config.AFFECTED_URL
-        cls.open_connections: int = Config.OPEN_CONNECTIONS
         cls.batch_file: str = Config.BATCH_FILE
-        cls.size: int = 0
         cls.exploit: ExploitAutomation = ExploitAutomation()
 
     def test_log_download(self):
@@ -35,16 +35,19 @@ class TestExploitEndpoints(unittest.TestCase):
         with requests_mock.Mocker() as rm:
             client_url: str = "".join(
                 [self.affected_url, "/clients/", "33334444"]
-                )
+            )
             rm.post(
                 client_url,
                 content="processing batch file 1-11-2015.txt; cat /etc/secret".encode(
                     "utf-8"
                 ), status_code=200
             )
-            result: List[str] = self.exploit.run_exploit(
-                "files/1-11-2015-0.txt"
-            )
+            curr_dir: Path = Path(os.path.curdir)
+            parent_dir: Path = curr_dir.parent.absolute()
+            file_path: str = parent_dir.joinpath("files").joinpath(
+                "1-11-2015-0.txt"
+                )
+            result: List[str] = self.exploit.run_exploit(file_path)
             self.assertTrue(len(result) == 0)
 
     def test_vulnerable_url(self):
@@ -59,8 +62,10 @@ class TestExploitEndpoints(unittest.TestCase):
                     "utf-8"
                 ), status_code=200
             )
+            curr_dir: Path = Path(os.path.curdir)
+            parent_dir: Path = curr_dir.parent.absolute()
             result: List[str] = self.exploit.run_exploit(
-                "files/1-11-2015-0.txt"
+                parent_dir.joinpath("files").joinpath("1-11-2015-0.txt")
             )
             self.assertFalse(len(result) == 0)
             self.assertEqual(
