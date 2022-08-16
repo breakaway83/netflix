@@ -8,6 +8,8 @@ import requests_mock
 from config import Config
 from exploit_automation import ExploitAutomation
 
+unittest.TestLoader.sortTestMethodsUsing = None
+
 
 class TestExploitEndpoints(unittest.TestCase):
 
@@ -31,7 +33,7 @@ class TestExploitEndpoints(unittest.TestCase):
                 client_id = fd.readline().strip()
             self.assertEqual(client_id, "33334444")
 
-    def test_benign_url(self):
+    def test_url_benign(self):
         with requests_mock.Mocker() as rm:
             client_url: str = "".join(
                 [self.affected_url, "/clients/", "33334444"]
@@ -46,11 +48,11 @@ class TestExploitEndpoints(unittest.TestCase):
             parent_dir: Path = curr_dir.parent.absolute()
             file_path: str = parent_dir.joinpath("files").joinpath(
                 "1-11-2015-0.txt"
-                )
+            )
             result: List[str] = self.exploit.run_exploit(file_path)
             self.assertTrue(len(result) == 0)
 
-    def test_vulnerable_url(self):
+    def test_url_vulnerable(self):
         with requests_mock.Mocker() as rm:
             client_url: str = "".join(
                 [self.affected_url, "/clients/", "33334444"]
