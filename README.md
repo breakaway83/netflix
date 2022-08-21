@@ -31,6 +31,7 @@ Run Tests
 * If you want to run tests:
 * cd to the unzipped folder
 ```shell
+$ cd netflix
 $ python -m unittest tests/test_vulnerable_urls.py
 ```
 
